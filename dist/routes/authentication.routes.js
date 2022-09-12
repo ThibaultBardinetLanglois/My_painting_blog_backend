@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authentication_controller_1 = require("../controllers/authentication.controller");
+const authentication_middleware_1 = require("../middlewares/verifications/requestContent/authentication.middleware");
+const authentication_middleware_2 = require("../middlewares/verifications/database/authentication.middleware");
+const authentication_middleware_3 = require("../middlewares/security/authentication.middleware");
+const authenticationRouter = (0, express_1.Router)();
+authenticationRouter.post('/register', authentication_middleware_1.AuthenticationRequestVerifications.verifyPresenceOfFieldsForRegister, authentication_middleware_1.AuthenticationRequestVerifications.verifyUsernamePresence, authentication_middleware_1.AuthenticationRequestVerifications.verifyEmailPresence, authentication_middleware_1.AuthenticationRequestVerifications.verifyEmailSyntax, authentication_middleware_1.AuthenticationRequestVerifications.verifyPasswordPresence, authentication_middleware_1.AuthenticationRequestVerifications.verifyPasswordSyntax, authentication_middleware_2.AuthenticationDBVerifications.findUserInDbByUsername, authentication_middleware_2.AuthenticationDBVerifications.dontAuthorizeDuplicateUsername, authentication_middleware_3.hashPassword, authentication_controller_1.AuthenticationController.register);
+authenticationRouter.get('/login', authentication_middleware_1.AuthenticationRequestVerifications.verifyPresenceOfFieldsForLogin, authentication_middleware_1.AuthenticationRequestVerifications.verifyUsernamePresence, authentication_middleware_1.AuthenticationRequestVerifications.verifyPasswordPresence, authentication_middleware_1.AuthenticationRequestVerifications.verifyPasswordSyntax, authentication_middleware_2.AuthenticationDBVerifications.findUserInDbByUsername, authentication_middleware_2.AuthenticationDBVerifications.checkIfUserExistForLogin, authentication_middleware_3.comparePassword, authentication_controller_1.AuthenticationController.login);
+exports.default = authenticationRouter;
